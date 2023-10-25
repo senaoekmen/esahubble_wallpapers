@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Define the URL of the ESA webpage 
+URL="https://esahubble.org/images/viewall/"
+
+# Use curl to fetch the webpage content and extract the 'id' values
+ids=$(curl -s "$URL" | grep -oP 'id: '\''\K[^'\'']+')
+
+# Shuffle the list of IDs and select the first 100
+shuffled_ids=$(echo "$ids" | shuf | head -n 100)
+
+# Loop through each 'id' and download the corresponding image
+for id in $shuffled_ids
+do
+    # Construct the image URL with the 'id'
+    IMAGE_URL="https://cdn.spacetelescope.org/archives/images/wallpaper4/${id}.jpg"
+
+    # Use wget to download the image
+    wget "$IMAGE_URL" -P esa_images
+
+    # Pause for a moment to avoid overloading the server
+    sleep 1
+done
+
+echo "Downloaded images to 'esa_images' directory."
